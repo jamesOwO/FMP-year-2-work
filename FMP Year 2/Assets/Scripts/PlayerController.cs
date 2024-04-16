@@ -1,10 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.UI;
+
 
 public class PlayerController : MonoBehaviour
 {
+    private bool moving = false;
+    private bool startGame = false;
     private Rigidbody2D rb;
     public float moveSpeed;
     private float movehorizontal;
@@ -15,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D coll;
     [SerializeField] private LayerMask jumpableGround;
 
+    public Animator cageAnimator;
     public Animator animator; 
     void Start()
     {
@@ -27,27 +34,42 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        movehorizontal = Input.GetAxisRaw("Horizontal");
+        if (moving == true)
+        {
+            movehorizontal = Input.GetAxisRaw("Horizontal");
 
-        rb.velocity = new Vector2(movehorizontal * moveSpeed, rb.velocity.y);
+            rb.velocity = new Vector2(movehorizontal * moveSpeed, rb.velocity.y);
 
-        if (movehorizontal > 0.1)
-        {
-            isRunning = true;
-            GetComponent<SpriteRenderer>().flipX = false;
-        }
-        else if (movehorizontal < -0.1)
-        {
-            isRunning = true;
-            GetComponent<SpriteRenderer>().flipX = true;
-        }
-        else
-        {
-            isRunning = false;
+            if (movehorizontal > 0.1)
+            {
+                isRunning = true;
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+            else if (movehorizontal < -0.1)
+            {
+                isRunning = true;
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
+            else
+            {
+                isRunning = false;
+            }
         }
     }
     private void Update()
     {
+        if (Input.GetButtonDown("Jump") && startGame == false)
+        {
+            startGame = true;
+            cageAnimator.SetBool("Fall", false);
+            Console.WriteLine("Spacebar down");
+        }
+
+
+
+
+
+
         animator.SetBool("Running", isRunning);
 
     }
